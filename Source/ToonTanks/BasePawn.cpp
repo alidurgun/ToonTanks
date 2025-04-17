@@ -4,6 +4,9 @@
 #include "BasePawn.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
+// #include "DrawDebugHelpers.h"
+#include "Projectilee.h"
+#include "Engine/World.h"
 
 // Sets default values
 ABasePawn::ABasePawn()
@@ -23,17 +26,25 @@ ABasePawn::ABasePawn()
 	SpawnProjectile->SetupAttachment(TurretMesh);
 }
 
-// lookAtTarget is our end point.
-void ABasePawn::rotateTurret(FVector lookAtTarget) {
+void ABasePawn::rotateTurret(FVector endPoint) {
 	// target = end - start
-	FVector target = lookAtTarget - TurretMesh->GetComponentLocation();
+	FVector target = endPoint - TurretMesh->GetComponentLocation();
 
 	// Because we only want to change yaw.
 	FRotator targetRotation = FRotator(0.f, target.Rotation().Yaw, 0.f);
 
 	// to set rotation of turret.
-	FMath::RInterpTo(TurretMesh->GetComponentRotation(),
+	TurretMesh->SetWorldRotation(FMath::RInterpTo(TurretMesh->GetComponentRotation(),
 		targetRotation,
 		UGameplayStatics::GetWorldDeltaSeconds(this),
-		1.f);
+		5.f)
+		);
+}
+
+void ABasePawn::Fire() {
+	// DrawDebugSphere(GetWorld(), SpawnProjectile->GetComponentLocation(), 30.0f, 10, FColor::Cyan, false, 3.0f);
+	
+	// To spawn actor with related BP class. We set the BP class in the
+	// Base pawn's BP class. in the combat section for the ProjectileClass.
+	GetWorld()->SpawnActor<AProjectilee>(ProjectileClass, SpawnProjectile->GetComponentLocation(), SpawnProjectile->GetComponentRotation());
 }
