@@ -30,6 +30,8 @@ void AProjectilee::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// To add our function to list(will be called when hit event generated.).
+	ProjectileMesh->OnComponentHit.AddDynamic(this, &AProjectilee::OnHit);
 }
 
 // Called every frame
@@ -37,5 +39,13 @@ void AProjectilee::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void AProjectilee::OnHit(UPrimitiveComponent* hitComp, AActor* otherActor,
+	UPrimitiveComponent* otherComp, FVector NormalImpulse,
+	const FHitResult& Hit) {
+	// UE_LOG(LogTemp, Warning, TEXT("OnHit"));
+	UE_LOG(LogTemp, Warning, TEXT("%s is our hitComp, %s is our otherActor, %s is our otherComp"),
+		*hitComp->GetName(), *otherActor->GetName(), *otherComp->GetName());
 }
 

@@ -24,6 +24,15 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Combat")
 	UProjectileMovementComponent* MovementComponent;
 
+	UFUNCTION()
+	// hitComp => This is the component that doing the hit.
+	// otherActor => Actor that get hit.
+	// otherComp => other component that got hit.
+	// NormalImpulse => direction and the magnitude of the impulse.
+	// Hit => Has more information about the hit.
+	void OnHit(UPrimitiveComponent* hitComp, AActor* otherActor,
+		UPrimitiveComponent* otherComp, FVector NormalImpulse, const FHitResult& Hit);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
