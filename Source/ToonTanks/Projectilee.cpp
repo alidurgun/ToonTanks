@@ -3,6 +3,7 @@
 
 #include "Projectilee.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AProjectilee::AProjectilee()
@@ -45,7 +46,22 @@ void AProjectilee::OnHit(UPrimitiveComponent* hitComp, AActor* otherActor,
 	UPrimitiveComponent* otherComp, FVector NormalImpulse,
 	const FHitResult& Hit) {
 	// UE_LOG(LogTemp, Warning, TEXT("OnHit"));
-	UE_LOG(LogTemp, Warning, TEXT("%s is our hitComp, %s is our otherActor, %s is our otherComp"),
-		*hitComp->GetName(), *otherActor->GetName(), *otherComp->GetName());
+	/*UE_LOG(LogTemp, Warning, TEXT("%s is our hitComp, %s is our otherActor, %s is our otherComp"),
+		*hitComp->GetName(), *otherActor->GetName(), *otherComp->GetName());*/
+
+	auto MyOwner = GetOwner();
+	if (MyOwner == nullptr) return;
+
+	// to get it's Controller.
+	auto EventInstigator = MyOwner->GetInstigatorController();
+
+	// damagetype input.
+	auto damageType = UDamageType::StaticClass();
+
+	// we don't want to damage ourself.
+	if (otherActor != nullptr && otherActor != this && otherActor != MyOwner) {
+		UGameplayStatics::ApplyDamage(otherActor, this->damageValue, EventInstigator, MyOwner, damageType);
+		Destroy();
+	}
 }
 

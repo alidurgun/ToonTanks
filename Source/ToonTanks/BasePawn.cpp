@@ -46,5 +46,8 @@ void ABasePawn::Fire() {
 	
 	// To spawn actor with related BP class. We set the BP class in the
 	// Base pawn's BP class. in the combat section for the ProjectileClass.
-	GetWorld()->SpawnActor<AProjectilee>(ProjectileClass, SpawnProjectile->GetComponentLocation(), SpawnProjectile->GetComponentRotation());
+	auto projectile = GetWorld()->SpawnActor<AProjectilee>(ProjectileClass, SpawnProjectile->GetComponentLocation(), SpawnProjectile->GetComponentRotation());
+
+	// we are setting it's owner to itself. We'll use it in on hit function.
+	projectile->SetOwner(this);
 }

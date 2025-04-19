@@ -24,6 +24,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = "Combat")
 	UProjectileMovementComponent* MovementComponent;
 
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	float damageValue{ 50.f };
+
 	UFUNCTION()
 	// hitComp => This is the component that doing the hit.
 	// otherActor => Actor that get hit.
