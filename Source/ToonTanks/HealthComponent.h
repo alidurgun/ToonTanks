@@ -30,6 +30,9 @@ private:
 	float MaxHealth{ 100.f };
 	float CurrentHealth{ 0.f };
 
+	// game mode pointer
+	class AToonTanksGameMode* ToonTaksGameMode;
+
 	UFUNCTION()
 	// DamagedActor => Actor that getting damage.
 	// Damage => Amount of damage.

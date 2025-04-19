@@ -15,6 +15,9 @@ public:
 	// Sets default values for this pawn's properties
 	ABasePawn();
 
+	// In case of death.
+	virtual void HandleDestruction();
+
 protected:
 	// to rotate turret.
 	void rotateTurret(FVector endPoint);

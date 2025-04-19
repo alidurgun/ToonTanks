@@ -56,6 +56,14 @@ void ATank::BeginPlay()
     PlayerControllerRef = Cast<APlayerController>(GetController());
 }
 
+void ATank::HandleDestruction() {
+    Super::HandleDestruction();
+    SetActorHiddenInGame(true);
+    SetActorTickEnabled(false);
+    DisableInput(PlayerControllerRef);
+    PlayerControllerRef->bShowMouseCursor = false;
+}
+
 void ATank::Move(float value)
 {
     double DeltaTime = UGameplayStatics::GetWorldDeltaSeconds(this);
