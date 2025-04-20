@@ -7,6 +7,7 @@
 #include "Components/InputComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "DrawDebugHelpers.h"
+#include "ToonTanksPlayerController.h"
 
 ATank::ATank()
 {
@@ -54,14 +55,14 @@ void ATank::BeginPlay()
     Super::BeginPlay();
 
     PlayerControllerRef = Cast<APlayerController>(GetController());
+    GameController = Cast<AToonTanksPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
 }
 
 void ATank::HandleDestruction() {
     Super::HandleDestruction();
     SetActorHiddenInGame(true);
     SetActorTickEnabled(false);
-    DisableInput(PlayerControllerRef);
-    PlayerControllerRef->bShowMouseCursor = false;
+    GameController->SetPlayerEnabledState(false);
 }
 
 void ATank::Move(float value)

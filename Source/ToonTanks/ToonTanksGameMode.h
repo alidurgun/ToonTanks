@@ -18,9 +18,19 @@ public:
 	// To handle death in game mode.
 	void ActorDied(class AActor* DeadActor);
 
-//protected:
-//	// Called when the game starts or when spawned
-//	virtual void BeginPlay() override;
+	// Blueprint Implementable Event
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartGame();
+
+private:
+	float StartDelay{ 3.f };
+	void HandleGameStart();
+
+	class AToonTanksPlayerController* PlayerController;
+
+protected:
+// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 //
 //private:
 //	class ATank* Tank;

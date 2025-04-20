@@ -5,6 +5,8 @@
 #include "Tank.h"
 #include "Tower.h"
 #include "Kismet/GameplayStatics.h"
+#include "ToonTanksPlayerController.h"
+#include "Delegates/DelegateSignatureImpl.inl"
 
 void AToonTanksGameMode::ActorDied(AActor* DeadActor) {
 
@@ -17,6 +19,47 @@ void AToonTanksGameMode::ActorDied(AActor* DeadActor) {
 	else if (ATower* destroyedTower = Cast<ATower>(DeadActor)) destroyedTower->HandleDestruction();*/
 }
 
-//void AToonTanksGameMode::BeginPlay() {
-//	Tank = Cast<ATank>(UGameplayStatics::GetPlayerPawn(this, 0));
-//}
+// Handle game start function to count down a timer.
+void AToonTanksGameMode::HandleGameStart() {
+	// call the event.
+	StartGame();
+
+	// Get the player controller.
+	PlayerController = Cast<AToonTanksPlayerController>(UGameplayStatics::GetPlayerController(this, 0));
+	
+	if (PlayerController)
+	{
+		// disable the input for the beginning.
+		PlayerController->SetPlayerEnabledState(false);
+
+		// Create a FTimerHandle for countdown.
+		FTimerHandle PlayerTimerHandle;
+
+		// create FTimerDelegate object. It will call our callback function
+		// when the timer is fired up.
+		FTimerDelegate PlayerEnableTimerDelegate;
+
+		// @param PlayerController => our player controller.
+		// @param callback function => this callback function will be called.
+		// @param true => input parameter for the callback function.
+		PlayerEnableTimerDelegate.BindUObject(
+			PlayerController,
+			&AToonTanksPlayerController::SetPlayerEnabledState,
+			true
+		);
+
+		// Set the timer in here.
+		// @param PlayerTimerHandle => FTimerHandle object that we created!
+		// @param PlayerEnableTimerDelegate => delegate function with callback.
+		// @param StartDelay => delay time in float.
+		// @param false => to make it one time timer. If we set it true it will
+		// continue in the loop.
+		GetWorldTimerManager().SetTimer(PlayerTimerHandle,
+			PlayerEnableTimerDelegate, StartDelay, false
+		);
+	}
+}
+
+void AToonTanksGameMode::BeginPlay() {
+	HandleGameStart();
+}

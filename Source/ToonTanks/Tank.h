@@ -48,4 +48,6 @@ private:
 	float TurnRate{45.f};
 
 	APlayerController* PlayerControllerRef;
+
+	class AToonTanksPlayerController* GameController;
 };
