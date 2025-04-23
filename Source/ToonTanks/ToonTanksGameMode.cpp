@@ -12,6 +12,18 @@ void AToonTanksGameMode::ActorDied(AActor* DeadActor) {
 
 	if (DeadActor == nullptr) return;
 	Cast<ABasePawn>(DeadActor)->HandleDestruction();
+
+	if (Cast<ATank>(DeadActor)) {
+		// If dead actor is tank then we lost the game.
+		GameOver(false);
+	}
+	else if (Cast<ATower>(DeadActor)) {
+		--TargetTower;
+		if (TargetTower == 0) {
+			// If all of the target tower is dead then we won the game.
+			GameOver(true);
+		}
+	}
 	/*return;
 
 	if (Tank == DeadActor) Tank->HandleDestruction();
@@ -61,5 +73,12 @@ void AToonTanksGameMode::HandleGameStart() {
 }
 
 void AToonTanksGameMode::BeginPlay() {
+	TargetTower = GetTargetTower();
 	HandleGameStart();
+}
+
+uint32 AToonTanksGameMode::GetTargetTower() {
+	TArray<AActor*> Towers;
+	UGameplayStatics::GetAllActorsOfClass(this, ATower::StaticClass(), Towers);
+	return Towers.Num();
 }
