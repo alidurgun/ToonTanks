@@ -4,6 +4,7 @@
 #include "Projectilee.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 AProjectilee::AProjectilee()
@@ -24,6 +25,12 @@ AProjectilee::AProjectilee()
 	// Initial and max speed values for the movement component.
 	MovementComponent->InitialSpeed = 1300.0f;
 	MovementComponent->MaxSpeed = 1300.0f;
+
+	// Initialize the trailer.
+	TrailParticles = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Smoke Trail"));
+
+	// Attach the trailer to the our particle.
+	TrailParticles->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -33,6 +40,12 @@ void AProjectilee::BeginPlay()
 	
 	// To add our function to list(will be called when hit event generated.).
 	ProjectileMesh->OnComponentHit.AddDynamic(this, &AProjectilee::OnHit);
+
+	// Play launch sound
+	if (LaunchSound) {
+		UGameplayStatics::PlaySoundAtLocation(this, LaunchSound, GetActorLocation());
+	}
+	
 }
 
 // Called every frame
@@ -50,18 +63,33 @@ void AProjectilee::OnHit(UPrimitiveComponent* hitComp, AActor* otherActor,
 		*hitComp->GetName(), *otherActor->GetName(), *otherComp->GetName());*/
 
 	auto MyOwner = GetOwner();
-	if (MyOwner == nullptr) return;
 
+	if (MyOwner == nullptr) {
+		Destroy();
+		return;
+	}
 	// to get it's Controller.
 	auto EventInstigator = MyOwner->GetInstigatorController();
 
 	// damagetype input.
 	auto damageType = UDamageType::StaticClass();
 
+	// Play hit sound.
+	if (HitSound) {
+		UGameplayStatics::PlaySoundAtLocation(this, HitSound, GetActorLocation());
+	}
+
 	// we don't want to damage ourself.
 	if (otherActor != nullptr && otherActor != this && otherActor != MyOwner) {
 		UGameplayStatics::ApplyDamage(otherActor, this->damageValue, EventInstigator, MyOwner, damageType);
-		Destroy();
+
+		// We have valid particle system.
+		if (HitParticles) {
+			// Spawn our particle system.
+			UGameplayStatics::SpawnEmitterAtLocation(this, HitParticles, GetActorLocation(), GetActorRotation());
+		}
 	}
+
+	Destroy();
 }
 

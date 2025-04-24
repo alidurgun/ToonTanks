@@ -6,7 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "Projectilee.generated.h"
 
+// Forward Decleration
 class UProjectileMovementComponent;
+class USoundBase;
 
 UCLASS()
 class TOONTANKS_API AProjectilee : public AActor
@@ -26,6 +28,22 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	float damageValue{ 50.f };
+
+	// To create a explosion effect.
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	class UParticleSystem* HitParticles;
+
+	// It's component because we are gonna attach it to our particle system
+	// So it will follow our particle as long as it's valid particle.
+	UPROPERTY(VisibleAnywhere, Category = "Combat")
+	class UParticleSystemComponent* TrailParticles;
+
+	// Sound Effects:
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	USoundBase* LaunchSound;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	USoundBase* HitSound;
 
 	UFUNCTION()
 	// hitComp => This is the component that doing the hit.

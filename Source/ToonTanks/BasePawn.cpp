@@ -27,7 +27,16 @@ ABasePawn::ABasePawn()
 }
 
 void ABasePawn::HandleDestruction() {
-	// TODO: Some sound/visual effects.
+	if (DeathParticle) {
+		// Spawn the particle.
+		UGameplayStatics::SpawnEmitterAtLocation(this, DeathParticle, GetActorLocation(), GetActorRotation());
+	}
+
+	// Play death sound.
+	if (DeathSound) {
+		UGameplayStatics::PlaySoundAtLocation(this, DeathSound, GetActorLocation());
+	}
+	
 }
 
 void ABasePawn::rotateTurret(FVector endPoint) {

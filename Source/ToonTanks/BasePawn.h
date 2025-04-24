@@ -6,6 +6,9 @@
 #include "GameFramework/Pawn.h"
 #include "BasePawn.generated.h"
 
+// Forward decleration
+class USoundBase;
+
 UCLASS()
 class TOONTANKS_API ABasePawn : public APawn
 {
@@ -25,6 +28,10 @@ protected:
 	// to fire projectile.
 	void Fire();
 
+	// Particle that will be spawn on death of actor.
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	class UParticleSystem* DeathParticle;
+
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	class UCapsuleComponent* CapsuleComp;
@@ -40,6 +47,10 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Combat")
 	TSubclassOf<class AProjectilee> ProjectileClass;
+
+	// Sound effects
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	USoundBase* DeathSound;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

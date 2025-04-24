@@ -26,6 +26,10 @@ public:
 	// In case of death.
 	void HandleDestruction() override;
 
+	inline const bool isTankAlive() const {
+		return AliveStatus;
+	}
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -50,4 +54,6 @@ private:
 	APlayerController* PlayerControllerRef;
 
 	class AToonTanksPlayerController* GameController;
+
+	bool AliveStatus{ true };
 };
